@@ -17,16 +17,16 @@ class PlatformModel:
     def process(self, image_url, settings={ 'dimension': 1024, 'format': 'png'}):     
         res = requests.get(image_url)
         image = Image.open(BytesIO(res.content))
-        image = image.convert('RGB')
 
         # upspscale <= dimension
-        img_upscaled = self.realesrgan_model.process_from_image(image)
+        img_upscaled = self.realesrgan_model.process_from_image(image.convert('RGB'))
+        
+        # light fix
+        obj_light_fixed = self.dce_model.process_from_image(obj_img, alpha=0.5)
         
         # extract object
         obj_img = self.birefnet_model.extract_object_from_image(img_upscaled)
 
-        # light fix
-        obj_light_fixed = self.dce_model.process_from_image(obj_img, alpha=0.5)
 
                 
         # upload

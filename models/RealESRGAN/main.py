@@ -26,13 +26,7 @@ class RealESRGANModel:
         # download image
         print("Downloading image...")
         res = requests.get(image_url)
-        image = Image.open(BytesIO(res.content))
-
-        n_channels = np.split()[-1]
-        if n_channels == 4:
-            background = Image.new("RGB", image.size, (255, 255, 255))
-            background.paste(image, mask=image.split()[3])
-            image = background
+        image = Image.open(BytesIO(res.content)).convert('RGB')
 
         # prediction
         print("Upscaling image...")
