@@ -20,12 +20,12 @@ class PlatformModel:
 
         # upspscale <= dimension
         img_upscaled = self.realesrgan_model.process_from_image(image.convert('RGB'))
-        
+
         # light fix
-        obj_light_fixed = self.dce_model.process_from_image(obj_img, alpha=0.5)
+        obj_light_fixed = self.dce_model.process_from_image(img_upscaled, alpha=0.5)
         
         # extract object
-        obj_img = self.birefnet_model.extract_object_from_image(img_upscaled)
+        obj_img = self.birefnet_model.extract_object_from_image(obj_light_fixed)
 
 
                 
