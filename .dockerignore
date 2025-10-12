@@ -1,0 +1,15 @@
+# enivironment
+venv/
+.venv/
+
+# secrets
+.env
+
+# git files
+.gitifnore
+
+# test code
+development.py
+test/
+test_*.py
+*_test.py
