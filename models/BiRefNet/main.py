@@ -9,6 +9,7 @@ from lib.utils import upload_to_supabase
 
 import os
 import sys
+import numpy as np
 
 # Add the current directory to the Python path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -92,6 +93,10 @@ class BiRefNetModel:
         # extract object
         bbox = mask.getbbox()
         image = image.crop(bbox)
+        image = image.convert('RGBA')
+        data = np.array(image)
+        data[data[:, :, 3] == 0] = (0, 0, 0, 0)
+        image = Image.fromarray(data)
         
         # upload
         buffer = BytesIO()
