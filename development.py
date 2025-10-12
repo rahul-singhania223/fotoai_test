@@ -36,6 +36,7 @@ def main():
     # accept arguments
         parser = argparse.ArgumentParser(description="Select processor.")        
         parser.add_argument("--input", type=str, required=True)
+        parser.add_argument("--output", type=str, required=True)
         args = parser.parse_args()
 
         with open(args.input, 'r') as f:

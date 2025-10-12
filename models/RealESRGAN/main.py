@@ -25,7 +25,7 @@ class RealESRGANModel:
         # download image
         print("Downloading image...")
         res = requests.get(image_url)
-        image = Image.open(BytesIO(res.content)).convert('RGB')
+        image = Image.open(BytesIO(res.content))
 
         # prediction
         print("Upscaling image...")
