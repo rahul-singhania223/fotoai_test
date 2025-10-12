@@ -2,6 +2,7 @@ import torch
 from PIL import Image
 import requests
 from io import BytesIO
+import numpy as np
 
 from . import RealESRGAN
 from lib.utils import upload_to_supabase
@@ -26,6 +27,12 @@ class RealESRGANModel:
         print("Downloading image...")
         res = requests.get(image_url)
         image = Image.open(BytesIO(res.content))
+
+        n_channels = np.split()[-1]
+        if n_channels == 4:
+            background = Image.new("RGB", image.size, (255, 255, 255))
+            background.paste(image, mask=image.split()[3])
+            image = background
 
         # prediction
         print("Upscaling image...")
