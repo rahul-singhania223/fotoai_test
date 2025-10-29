@@ -69,7 +69,13 @@ class BiRefNetModel:
             transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])    
         ])
 
-        image = Image.open(BytesIO(res.content)).convert('RGB')
+        image = Image.open(BytesIO(res.content))
+
+        if image.format == 'PNG':
+            background = Image.new('RGB', image.size, (255, 255, 255))
+            background.paste(image, mask=image.split()[3])  # 3 is the alpha channel
+            image = background
+
         input_images = transform_image(image).unsqueeze(0).to('cuda').half()
 
 
