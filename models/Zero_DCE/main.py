@@ -43,7 +43,14 @@ class DCENetModel:
         alpha = settings['alpha']
         # load image
         res = requests.get(image_url)
-        image = Image.open(BytesIO(res.content)).convert('RGB')
+        image = Image.open(BytesIO(res.content))
+
+        alpha_channel = None
+        
+        if image.mode == 'RGBA':
+            alpha_channel = np.array(image.getchannel('A'))
+            image = image.convert('RGB')
+
         image = (np.asarray(image)/255.0)
         image = torch.from_numpy(image).float()
         image = image.permute(2,0,1)
@@ -57,9 +64,14 @@ class DCENetModel:
         img = np.clip(img * 255.0, 0, 255).astype(np.uint8)
         img = Image.fromarray(img)
 
+        final_image = image
+        if alpha_channel is not None:
+            img_np = np.array(img)
+            final_image = Image.fromarray(np.dstack((img_np, alpha_channel)), 'RGBA')
+
         # upload
         buffer = BytesIO()
-        img.save(buffer, format="PNG")
+        final_image.save(buffer, format="PNG")
         image_buffer = buffer.getvalue()    
         format = res.headers.get('Content-Type').split('/')[-1]
 

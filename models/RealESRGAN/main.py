@@ -19,9 +19,25 @@ class RealESRGANModel:
     def process_from_image(self, image):
         # prediction
         print("Upscaling image...")
-        result_image = self.model.predict(image)
+
+        final_image = None
+
+        if image.mode == 'RGBA':
+            rgb_img = image.convert('RGB')
+            alpha = np.array(image.getchannel('A'))
+
+            rgb_up = self.model.predict(rgb_img)
+            rgb_up_np = np.array(rgb_up)
+
+            h, w = rgb_up_np.shape[:2]
+            alpha_up = cv2.resize(alpha, (w, h), interpolation=cv2.INTER_CUBIC)
+
+            final_image = Image.fromarray(np.dstack((rgb_up_np, alpha_up)), 'RGBA')
+
+        else:
+            final_image = self.model.predict(image)
         
-        return result_image
+        return final_image
         
 
     def process(self, image_url, settings=None):

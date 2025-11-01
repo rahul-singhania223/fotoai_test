@@ -14,12 +14,12 @@ class PlatformModel:
         self.realesrgan_model = RealESRGANModel(4)
         self.dce_model = DCENetModel()
 
-    def process(self, image_url, settings={ 'dimension': 1024, 'format': 'png'}):     
+    def process(self, image_url, settings={ 'dimension': 2000, 'format': 'png'}):     
         res = requests.get(image_url)
         image = Image.open(BytesIO(res.content))
 
         # upspscale <= dimension
-        img_upscaled = self.realesrgan_model.process_from_image(image.convert('RGB'))
+        img_upscaled = self.realesrgan_model.process_from_image(image)
 
         # light fix
         obj_light_fixed = self.dce_model.process_from_image(img_upscaled, alpha=0.5)
