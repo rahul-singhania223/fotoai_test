@@ -37,8 +37,6 @@ class PlatformModel:
         res = requests.get(image_url)
         image = Image.open(BytesIO(res.content))
         
-
-    
         # Etract object
         print("Extracting object...")
         obj_img = self.extract_object(image)
