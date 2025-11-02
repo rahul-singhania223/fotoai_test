@@ -57,6 +57,18 @@ class PlatformModel:
         w, h = settings['dimension'], settings['dimension']
         imgW = w * 0.85
         imgH = imgW/obj_light_fixed.width * obj_light_fixed.height
+
+        if imgH > h:
+          new_imgH = h/imgH * imgH * 0.90
+          imgW = new_imgH/imgH * imgW   
+          imgH = new_imgH    
+
+        elif imgH == h:
+          new_imgH = imgH * 0.90
+          imgW = new_imgH/imgH * imgW
+          imgH = new_imgH   
+
+          
         paste_x = (w - int(imgW)) // 2
         paste_y = (h - int(imgH)) // 2
 
