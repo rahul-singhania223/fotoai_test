@@ -42,8 +42,6 @@ class BiRefNetModel:
 
         input_images = transform_image(image).unsqueeze(0).to('cuda').half()
 
-        print("Extracting object...")
-
         # Prediction
         with torch.no_grad():
             preds = self.birefnet(input_images)[-1].sigmoid().cpu()
@@ -56,8 +54,6 @@ class BiRefNetModel:
         # extract object
         bbox = mask.getbbox()
         image = image.crop(bbox)
-
-        print("Extracting object complete.")
 
         return image
 

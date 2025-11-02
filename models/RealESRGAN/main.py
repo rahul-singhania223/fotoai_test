@@ -16,10 +16,7 @@ class RealESRGANModel:
         self.model = RealESRGAN(device, scale)
         self.model.load_weights(f'models/RealESRGAN/weights/RealESRGAN_x{scale}.pth')
 
-    def process_from_image(self, image):
-        # prediction
-        print("Upscaling image...")
-
+    def process_from_image(self, image):      
         final_image = None
 
         if image.mode == 'RGBA':

@@ -8,17 +8,21 @@ from PIL import Image
 import requests
 from io import BytesIO
 
-def extract_object(image):
-    model = BiRefNetModel()
+def extract_object(image):    
+    model = BiRefNetModel()  
     return model.extract_object_from_image(image)
 
-def upscale_image(image):
+def upscale_image(image, iters=1):
     model = RealESRGANModel(2)
-    return model.process_from_image(image)
+    result = None
+    for _ in range(iters):
+        result = model.process_from_image(image)
+
+    return result
 
 def fix_light(image):
     model = DCENetModel()
-    return model.process_from_image(image)
+    return model.process_from_image(image, alpha=0.3)
 
 
 
@@ -42,12 +46,7 @@ class PlatformModel:
 
         # Upscale
         print("Upscaling object...")
-        obj_upscaled = self.upscale_2x(obj_img)
-        print("Upscaled object complete")
-
-        # Upscale
-        print("Upscaling object again...")
-        obj_upscaled = self.upscale_2x(obj_img)
+        obj_upscaled = self.upscale_2x(obj_img, iters=2)
         print("Upscaled object complete")
 
         # Light fix
@@ -63,8 +62,10 @@ class PlatformModel:
         paste_x = (w - int(imgW)) // 2
         paste_y = (h - int(imgH)) // 2
 
+        img = obj_light_fixed.resize((int(imgW), int(imgH)))
+
         background = Image.new('RGB', (w, h), (255, 255, 255))
-        background.paste(obj_light_fixed, (paste_x, paste_y), mask=obj_light_fixed.split()[3])
+        background.paste(img, (paste_x, paste_y), mask=img.split()[3])
 
         final_image = background
 
