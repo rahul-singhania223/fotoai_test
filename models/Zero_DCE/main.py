@@ -20,7 +20,13 @@ class DCENetModel:
         self.model.load_state_dict(torch.load(model_path, weights_only=False))
 
     def process_from_image(self, raw_image, alpha=1.0):
-        img = raw_image.convert('RGB')
+        img = raw_image
+        alpha_channel = None   
+
+        if img.mode == 'RGBA':
+            alpha_channel = np.array(img.getchannel('A'))
+            img = img.convert('RGB')
+
         img = (np.asarray(img)/255.0)
         img = torch.from_numpy(img).float()
         img = img.permute(2,0,1)
@@ -34,7 +40,13 @@ class DCENetModel:
         img = np.clip(img * 255.0, 0, 255).astype(np.uint8)
         img = Image.fromarray(img)
 
-        return img
+        final_image = img
+
+        if alpha_channel is not None:
+            img_np = np.array(img)
+            final_image = Image.fromarray(np.dstack((img_np, alpha_channel)), 'RGBA')
+
+        return final_image
 
 
 
@@ -64,7 +76,7 @@ class DCENetModel:
         img = np.clip(img * 255.0, 0, 255).astype(np.uint8)
         img = Image.fromarray(img)
 
-        final_image = image
+        final_image = img
         if alpha_channel is not None:
             img_np = np.array(img)
             final_image = Image.fromarray(np.dstack((img_np, alpha_channel)), 'RGBA')
